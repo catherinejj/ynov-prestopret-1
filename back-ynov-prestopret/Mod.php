@@ -12,6 +12,25 @@ class Mod {
         }
     }
 
+    public function InsertUtilisateur($nom_utilisateur, $prenom_utilisateur, $email, $mdp) {
+        $query = 'INSERT INTO utilisateur (nom_utilisateur, prenom_utilisateur, email, mdp) VALUES (:nom_utilisateur, :prenom_utilisateur, :email, :mdp)';
+        $result = $this->conn->prepare($query);
+        $result->bindValue(':nom_utilisateur', $nom_utilisateur, PDO::PARAM_STR);
+        $result->bindValue(':prenom_utilisateur', $prenom_utilisateur, PDO::PARAM_STR);
+        $result->bindValue(':email', $email, PDO::PARAM_STR);
+        $result->bindValue(':mdp', $mdp, PDO::PARAM_STR);
+        $result->execute() or die($this->ErrorSQL($result));
+    }
+
+    public function GetUserByEmail($email) {
+        $query = 'SELECT * FROM utilisateur WHERE email = :email';
+        $result = $this->conn->prepare($query);
+        $result->bindValue(':email', $email, PDO::PARAM_STR);
+        $result->execute();
+
+        return $result->fetch(PDO::FETCH_ASSOC); // Renvoie un tableau associatif de l'utilisateur ou `false` si non trouvé
+    }
+    
     public function InsertObjet($id_objet, $nom_objet, $statut_objet, $description_objet) {
         $query = 'INSERT INTO objet (nom_objet, description_objet) VALUES (:nom_objet, :description_objet)';
         $result = $this->conn->prepare($query);
